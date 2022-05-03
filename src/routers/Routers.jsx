@@ -4,16 +4,22 @@ import { createAppContainer } from "react-navigation";
 import Home from "../views/Home"
 import Detail from "../views/Detail"
 
-const screens = {
-  Home:{
-    screen: Home
+const Routers = createStackNavigator ({
+    Home: {
+        screen: Home,
+    },
+    Detail:{
+      screen: Detail,
+    },
   },
-  Detail:{
-    screen: Detail
-  },
-}
-
-const Routers = createStackNavigator(screens)
+  {
+    // hide header navigation
+    headerMode: 'none',
+    navigationOptions: {
+      headerShown: false,
+    }
+  }
+)
 
 
 export default createAppContainer(Routers)
