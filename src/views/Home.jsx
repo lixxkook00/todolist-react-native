@@ -1,8 +1,10 @@
 import React,{useState} from 'react';
-import { View,TouchableHighlight,StyleSheet ,Text,Modal} from 'react-native';
+import { View,TouchableHighlight,StyleSheet ,Text,Modal,ScrollView} from 'react-native';
 
 import AddListModal from '../components/AddListModal'
 import SpeedDialAddList from '../components/SpeedDialAddList'
+
+import colorsList from '../utils/Colors'
 
 const sectionList = [
     {
@@ -48,6 +50,8 @@ function Home({navigation}) {
 
     const [openSpeedDail,setOpenSpeedDail] = useState(false)
 
+    const [list,setList] = useState(sectionList)
+
     const categoryItemHandler = (section) => {
         navigation.navigate('Detail',section)
     }
@@ -56,10 +60,34 @@ function Home({navigation}) {
         setListModalState(!listModalState)
     }
 
+    const addList = (nameList) => {
+        // clone to temp list with spread
+        let tempList = [...list]
+
+        // create new list
+        tempList.push({
+            id:tempList.length,
+            name:nameList,
+            date:new Date(),
+            done:10,
+            totalWork:10,
+        })
+
+        // update new list
+        setList(tempList)
+    }
+
     return (
-        <View style={styles.home}> 
+        <View style={styles.home}>
+            <ScrollView 
+                contentContainerStyle={{
+                    display: "flex",
+                    flexWrap: "wrap", 
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start", }}>
             {
-                sectionList.map((section,index) => {
+                list.map((section,index) => {
                     return (
                         <TouchableHighlight 
                             style={styles.categoryItem}
@@ -79,6 +107,7 @@ function Home({navigation}) {
                     )
                 })
             }
+            </ScrollView>
 
             <SpeedDialAddList 
                 listModalState={listModalState} 
@@ -87,7 +116,7 @@ function Home({navigation}) {
                 setOpenSpeedDail={setOpenSpeedDail}
             />
 
-            {/* modal */}
+            {/* modal add list*/}
             <Modal
                 animationType="slide"
                 visible={listModalState}
@@ -98,6 +127,7 @@ function Home({navigation}) {
                                { toggleModalState()
                                 setOpenSpeedDail(!openSpeedDail)}
                             }
+                            addList={addList}
                         />
                     </View>
             </Modal>
@@ -115,6 +145,10 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "flex-start",
     },
+    // scrollView:{
+    //     display: "flex",
+    //     justifyContent: "flex-start",
+    // },
     button: {
         alignItems: "center",
         padding: 10
@@ -132,7 +166,7 @@ const styles = StyleSheet.create({
     categoryItemName:{
         fontSize: 18,
         fontWeight: "bold",
-        color: "pink"
+        color: colorsList.pink
     },
     categoryItemWorkQuantity:{
         fontSize: 14,

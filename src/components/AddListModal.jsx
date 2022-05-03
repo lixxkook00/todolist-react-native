@@ -1,49 +1,126 @@
-import { StyleSheet, Text, View, KeyboardAvoidingView,TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, {useState,useEffect} from 'react'
+import { 
+        TouchableWithoutFeedback,
+        StyleSheet, 
+        Text, 
+        View, 
+        KeyboardAvoidingView,
+        TouchableOpacity,
+        TextInput,
+        Keyboard } 
+  from 'react-native'
 
 import {AntDesign} from "@expo/vector-icons"
 
-import Header from './Header'
+import colorsList from '../utils/Colors'
 
-export default function AddListModal({closeModal}) {
+export default function AddListModal({closeModal,addList}) {
+
+  const [nameList,setNameList] = useState("")
+
+  const handleSubmitAddList = () => {
+    addList(nameList)
+    closeModal()
+  }
+
+  useEffect(()=>{
+    console.log(nameList)
+  },[nameList])
+
   return (
-    <KeyboardAvoidingView style={styles.containerAdd}>
-        <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
-          <AntDesign 
-            name="close" 
-            color= '#08c'
-            style={styles.icon}
-          >
-          </AntDesign>
-        </TouchableOpacity>
-        
-        <View styles={styles.titleAdd}>
-          <Text >AddListModal</Text>
-        </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <KeyboardAvoidingView style={styles.containerAdd} behavior="padding" >
+          {/* btn close modal */}
+          <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
+            <AntDesign 
+              name="close" 
+              color = {colorsList.purple}
+              style={styles.icon}
+            >
+            </AntDesign>
+          </TouchableOpacity>
+          
+          {/* title */}
+          <View style={styles.titleBG}>
+            <Text style={styles.titleAdd}>Create new list</Text>
+          </View>
 
-    </KeyboardAvoidingView>
+          {/* input */}
+          <View style={{alignItems: 'stretch',width: "80%",color: colorsList.pink}}>
+            <TextInput 
+              style={styles.input} 
+              placeholder="Type name for new list"
+              placeholderTextColor={colorsList.pink}
+              onChangeText = {text => setNameList(text)}
+            />
+          </View>
+
+          {/* button submit */}
+          <TouchableOpacity style={styles.createBtn} onPress={() => handleSubmitAddList()}>
+            <Text style={styles.createBtnText}>CREATE</Text>
+          </TouchableOpacity>
+
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   )
 }
 
 const styles = StyleSheet.create({
   containerAdd:{
     position: 'relative',
-    display: "flex",
-    height: "100%",
     width: "100%",
+    height: "100%",
+    display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
   },  
   closeBtn: {
     position: 'absolute',
-    top: 20,
+    top: 30,
     right: 20,
+    zIndex: 2
   },
   titleAdd:{
-    fontSize: 100,
-    fontWeight: "500",
+    fontSize: 25,
+    fontWeight: "800",
+    color: colorsList.purple,
+    alignSelf: "center",
+
   },
   icon:{
-    fontSize: 100,
+    fontSize: 30,
+  },
+  input:{
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colorsList.purple,
+    borderWidth: 1.5,
+    borderRadius: 4,
+    height: 50,
+    marginVertical: 15,
+    paddingHorizontal: 10,
+    color: colorsList.pink,
+    fontWeight: "500",
+  },
+  createBtn:{
+    backgroundColor: colorsList.pink,
+    height:50,
+    width: "80%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 4,
+    marginBottom:20
+  },
+  createBtnText:{
+    color: colorsList.purple,
+    fontWeight: "800",
+  },
+  titleBG:{
+    backgroundColor: colorsList.lightGray,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    paddingTop:30,
+    paddingBottom: 10
   }
 })
