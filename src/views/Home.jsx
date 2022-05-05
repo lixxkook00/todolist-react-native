@@ -46,10 +46,13 @@ const sectionList = [
 
 function Home({navigation}) {
 
+    // toggle modal
     const [listModalState,setListModalState] = useState(false)
 
+    // toggle speedail
     const [openSpeedDail,setOpenSpeedDail] = useState(false)
 
+    // list section
     const [list,setList] = useState(sectionList)
 
     const categoryItemHandler = (section) => {

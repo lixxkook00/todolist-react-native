@@ -10,7 +10,9 @@ import Header from './src/components/Header.jsx';
 
 export default function App() {
 
-  // const [listModalState,setListModalState] = useState(false)
+  // title header
+
+  const [titleHeader,setTitleHeader] = useState('conchochuyen')
 
   return (
       <View style={styles.container}>

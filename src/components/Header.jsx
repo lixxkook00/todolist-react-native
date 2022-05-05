@@ -1,18 +1,22 @@
 import React from 'react';
 import { StyleSheet,View ,Text,Image,TouchableHighlight} from 'react-native';
 
+import colorsList from '../utils/Colors'
+
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+
 function Header({navigation}) {
     const goBackHandler = () => {
         navigation.goBack();
     }
     return (
         <View style={styles.header}>
-            <TouchableHighlight onPress={goBackHandler}>
-                <Text>icon nav</Text>
+            <TouchableHighlight onPress={() => goBackHandler()}>
+                <EvilIcons name="navicon" size={32} color={colorsList.white} />
             </TouchableHighlight>
             <Text >
                 <View >
-                    <Text style={styles.name}>lixxkook</Text>
+                    <Text style={styles.name}>conchochuyen</Text>
                 </View>
             </Text>
             <Image

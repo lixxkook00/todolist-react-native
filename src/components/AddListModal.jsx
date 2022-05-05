@@ -28,7 +28,7 @@ export default function AddListModal({closeModal,addList}) {
   },[nameList])
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback style={styles.modal} onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView style={styles.containerAdd} behavior="padding" >
           {/* btn close modal */}
           <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
@@ -46,11 +46,12 @@ export default function AddListModal({closeModal,addList}) {
           </View>
 
           {/* input */}
-          <View style={{alignItems: 'stretch',width: "80%",color: colorsList.pink}}>
+          <View style={{alignItems: 'stretch',width: "90%",color: colorsList.pink}}>
             <TextInput 
               style={styles.input} 
               placeholder="Type name for new list"
               placeholderTextColor={colorsList.pink}
+              value={nameList}
               onChangeText = {text => setNameList(text)}
             />
           </View>
@@ -93,18 +94,19 @@ const styles = StyleSheet.create({
   input:{
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colorsList.purple,
-    borderWidth: 1.5,
+    borderWidth: 2.5,
     borderRadius: 4,
     height: 50,
     marginVertical: 15,
     paddingHorizontal: 10,
-    color: colorsList.pink,
+    color: colorsList.lightPink,
     fontWeight: "500",
+    fontSize:16,
   },
   createBtn:{
     backgroundColor: colorsList.pink,
     height:50,
-    width: "80%",
+    width: "90%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    paddingTop:30,
-    paddingBottom: 10
+    paddingTop:60,
+    paddingBottom: 20
   }
 })
