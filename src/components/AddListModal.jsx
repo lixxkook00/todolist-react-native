@@ -23,9 +23,9 @@ export default function AddListModal({closeModal,addList}) {
     closeModal()
   }
 
-  useEffect(()=>{
-    console.log(nameList)
-  },[nameList])
+  // useEffect(()=>{
+  //   console.log(nameList)
+  // },[nameList])
 
   return (
     <TouchableWithoutFeedback style={styles.modal} onPress={() => Keyboard.dismiss()}>

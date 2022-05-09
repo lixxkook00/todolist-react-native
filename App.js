@@ -12,12 +12,12 @@ export default function App() {
 
   // title header
 
-  const [titleHeader,setTitleHeader] = useState('conchochuyen')
+  // const [titleHeader,setTitleHeader] = useState('conchochuyen')
 
   return (
       <View style={styles.container}>
 
-        <Header/>
+        {/* <Header/> */}
 
         {/* main component */}
         <Navigator 

@@ -5,6 +5,7 @@ import AddListModal from '../components/AddListModal'
 import SpeedDialAddList from '../components/SpeedDialAddList'
 
 import colorsList from '../utils/Colors'
+import Header from '../components/Header'
 
 const sectionList = [
     {
@@ -81,66 +82,69 @@ function Home({navigation}) {
     }
 
     return (
-        <View style={styles.home}>
-            <ScrollView 
-                contentContainerStyle={{
-                    display: "flex",
-                    flexWrap: "wrap", 
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start", }}>
-            {
-                list.map((section,index) => {
-                    return (
-                        <TouchableHighlight 
-                            style={styles.categoryItem}
-                            underlayColor="#8C98CD" 
-                            key={index}
-                            onPress={() => categoryItemHandler(section)} 
-                        >
-                            <View style={styles.button}>
-                                <Text style={styles.categoryItemName}>
-                                    {section.name}
-                                </Text>
-                                <Text style={styles.categoryItemWorkQuantity}>
-                                    ({section.done}/{section.totalWork})
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    )
-                })
-            }
-            </ScrollView>
+        <View style={styles.content}>
+            <Header/>
+            <View style={styles.home}>
+                <ScrollView 
+                    contentContainerStyle={{
+                        display: "flex",
+                        flexWrap: "wrap", 
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start", }}>
+                {
+                    list.map((section,index) => {
+                        return (
+                            <TouchableHighlight 
+                                style={styles.categoryItem}
+                                underlayColor="#8C98CD" 
+                                key={index}
+                                onPress={() => categoryItemHandler(section)} 
+                            >
+                                <View style={styles.button}>
+                                    <Text style={styles.categoryItemName}>
+                                        {section.name}
+                                    </Text>
+                                    <Text style={styles.categoryItemWorkQuantity}>
+                                        ({section.done}/{section.totalWork})
+                                    </Text>
+                                </View>
+                            </TouchableHighlight>
+                        )
+                    })
+                }
+                </ScrollView>
 
-            <SpeedDialAddList 
-                listModalState={listModalState} 
-                setListModalState={setListModalState}
-                openSpeedDail={openSpeedDail}
-                setOpenSpeedDail={setOpenSpeedDail}
-            />
+                <SpeedDialAddList 
+                    listModalState={listModalState} 
+                    setListModalState={setListModalState}
+                    openSpeedDail={openSpeedDail}
+                    setOpenSpeedDail={setOpenSpeedDail}
+                />
 
-            {/* modal add list*/}
-            <Modal
-                animationType="slide"
-                visible={listModalState}
-                >
-                    <View>
-                        <AddListModal 
-                            closeModal={() => 
-                               { toggleModalState()
-                                setOpenSpeedDail(!openSpeedDail)}
-                            }
-                            addList={addList}
-                        />
-                    </View>
-            </Modal>
+                {/* modal add list*/}
+                <Modal
+                    animationType="slide"
+                    visible={listModalState}
+                    >
+                        <View>
+                            <AddListModal 
+                                closeModal={() => 
+                                { toggleModalState()
+                                    setOpenSpeedDail(!openSpeedDail)}
+                                }
+                                addList={addList}
+                            />
+                        </View>
+                </Modal>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     home:{
-        height: "100%",
+        height: "90%",
         marginVertical: 10,
         display: "flex",
         flexWrap: "wrap",
@@ -148,10 +152,9 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "flex-start",
     },
-    // scrollView:{
-    //     display: "flex",
-    //     justifyContent: "flex-start",
-    // },
+    content:{
+        height: "100%"
+    },
     button: {
         alignItems: "center",
         padding: 10

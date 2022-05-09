@@ -31,7 +31,7 @@ function Header({navigation}) {
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor:"rgba(000, 000, 000 , 0.15)",
+        backgroundColor: colorsList.purple,
         color: "#ffffff",
         height: 70,
         paddingHorizontal: 15,

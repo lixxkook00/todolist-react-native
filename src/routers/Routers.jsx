@@ -13,11 +13,8 @@ const Routers = createStackNavigator ({
     },
   },
   {
-    // hide header navigation
+    initialRouteName: 'Home',
     headerMode: 'none',
-    navigationOptions: {
-      headerShown: false,
-    }
   }
 )
 
