@@ -1,8 +1,11 @@
 import React,{useState} from 'react'
-import { StyleSheet, Text, View, TouchableHighlight,ScrollView} from 'react-native'
+import { StyleSheet, Text, View, TouchableHighlight,ScrollView,Modal} from 'react-native'
 import * as Progress from 'react-native-progress';
 import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+import AddTaskModal from '../components/AddTaskModal'
+import SpeedDialAddList from '../components/SpeedDialAddList'
 
 import colorsList from '../utils/Colors'
 
@@ -25,60 +28,6 @@ const sectionItem = [
         date:new Date(),
         done: false,
     },
-    {
-        idList:3,
-        content:"I'll try to update the docs to indicate this.",
-        date:new Date(),
-        done: false,
-    },
-    {
-        idList:0,
-        content:"Deadline dashboard trust group",
-        date:new Date(),
-        done: true,
-    },
-    {
-        idList:1,
-        content:"Final project Meanchine learning !!!",
-        date:new Date(),
-        done: true,
-    },
-    {
-        idList:2,
-        content:"Run for 5km ",
-        date:new Date(),
-        done: false,
-    },
-    {
-        idList:3,
-        content:"I'll try to update the docs to indicate this.",
-        date:new Date(),
-        done: false,
-    },
-    {
-        idList:0,
-        content:"Deadline dashboard trust group",
-        date:new Date(),
-        done: true,
-    },
-    {
-        idList:1,
-        content:"Final project Meanchine learning !!!",
-        date:new Date(),
-        done: true,
-    },
-    {
-        idList:2,
-        content:"Run for 5km ",
-        date:new Date(),
-        done: false,
-    },
-    {
-        idList:3,
-        content:"I'll try to update the docs to indicate this.",
-        date:new Date(),
-        done: false,
-    }
 ]
 
 const calcPercentTaskDone = (taskDone,totalTask) => {
@@ -89,10 +38,39 @@ export default function Detail({navigation}) {
 
     const [percentTaskDone,setPercentTaskDone] = useState(0)
 
+    const [data,setData] = useState([...sectionItem])
+
+    // toggle modal
+    const [listModalState,setListModalState] = useState(false)
+
+    // toggle speedail
+    const [openSpeedDail,setOpenSpeedDail] = useState(false)
+
     const goBackHandler = () => {
         navigation.goBack();
     }
+
+    const handleToggleDoneTask = (index) => {
+        const tempData = [...data]
+        tempData[index].done = !tempData[index].done
+        setData(tempData)
+    }
     
+    const addList = (nameList) => {
+        // clone to temp list with spread
+        let tempList = [...data]
+
+        // create new list
+        tempList.push({
+            id:tempList.length,
+            content:nameList,
+            done:true,
+        })
+
+        // update new list
+        setList(tempList)
+    }
+
     // aniamtion delay for display percent task done
     setTimeout(() => {
       setPercentTaskDone(calcPercentTaskDone(navigation.getParam('done'),navigation.getParam('totalWork')))
@@ -101,6 +79,7 @@ export default function Detail({navigation}) {
 
   return (
     <View style={styles.main}>
+
       {/* HEADER DETAIL */}
       <View style={styles.header}>
         {/* back button */}
@@ -119,7 +98,7 @@ export default function Detail({navigation}) {
         </View>
       </View>
 
-      {/* percent task done */}
+      {/* PERCENT BAR */}
       <View style={styles.percentTask}>
         <Progress.Bar 
           progress={percentTaskDone} 
@@ -128,7 +107,8 @@ export default function Detail({navigation}) {
           borderRadius={10}
         />
       </View>
-      {/* list task */}
+
+      {/* LIST TASK */}
       <View style={styles.content}>
         {/* LIST TO DO */}
         <ScrollView 
@@ -143,16 +123,25 @@ export default function Detail({navigation}) {
           showsHorizontalScrollIndicator={false}
         >        
           {
-            sectionItem.map((item,index) => {
+            data.map((item,index) => {
               return (
-                <View key={index} style={styles.todoItem}>
+                <View 
+                  key={index} 
+                  style={
+                    [
+                      styles.todoItem,
+                      {
+                         backgroundColor: item.done ? colorsList.veryLightGray : colorsList.lightGray
+                      }
+                    ]
+                    }>
+
                   {/* ITEM TO DO */}
                   <TouchableHighlight 
                     onPress={() => { 
-                      item.done == !item.done
-                      console.log(item.done)
+                      handleToggleDoneTask(index)
                     }}
-                    underlayColor="#8C98CD"
+                    underlayColor= {colorsList.pink}
                     style={styles.todoItemIcon}
                   >
                     {/* ICON */}
@@ -178,6 +167,29 @@ export default function Detail({navigation}) {
           }
         </ScrollView>
       </View>
+
+      <SpeedDialAddList 
+                    listModalState={listModalState} 
+                    setListModalState={setListModalState}
+                    openSpeedDail={openSpeedDail}
+                    setOpenSpeedDail={setOpenSpeedDail}
+                />
+
+                {/* modal add list*/}
+                <Modal
+                    animationType="slide"
+                    visible={listModalState}
+                    >
+                        <View>
+                            <AddTaskModal 
+                                closeModal={() => 
+                                { toggleModalState()
+                                    setOpenSpeedDail(!openSpeedDail)}
+                                }
+                                addList={addList}
+                            />
+                        </View>
+                </Modal>
     </View>
   )
 }
@@ -224,7 +236,6 @@ const styles = StyleSheet.create({
     width: "98%",
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: colorsList.veryLightGray,
     marginVertical: 4,
     borderRadius: 24
   },

@@ -11,7 +11,7 @@ function Header({navigation}) {
     }
     return (
         <View style={styles.header}>
-            <TouchableHighlight onPress={() => goBackHandler()}>
+            <TouchableHighlight>
                 <EvilIcons name="navicon" size={32} color={colorsList.white} />
             </TouchableHighlight>
             <Text >

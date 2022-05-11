@@ -14,7 +14,7 @@ import {AntDesign} from "@expo/vector-icons"
 
 import colorsList from '../utils/Colors'
 
-export default function AddListModal({closeModal,addList}) {
+export default function AddTaskModal({closeModal,addList}) {
 
   const [nameList,setNameList] = useState("")
 
@@ -42,7 +42,7 @@ export default function AddListModal({closeModal,addList}) {
           
           {/* title */}
           <View style={styles.titleBG}>
-            <Text style={styles.titleAdd}>Create new list</Text>
+            <Text style={styles.titleAdd}>Add task</Text>
           </View>
 
           {/* input */}
@@ -58,7 +58,7 @@ export default function AddListModal({closeModal,addList}) {
 
           {/* button submit */}
           <TouchableOpacity style={styles.createBtn} onPress={() => handleSubmitAddList()}>
-            <Text style={styles.createBtnText}>CREATE</Text>
+            <Text style={styles.createBtnText}>ADD</Text>
           </TouchableOpacity>
 
       </KeyboardAvoidingView>

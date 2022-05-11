@@ -1,0 +1,18 @@
+- tổ chức thư mục --> DONE
+- tìm giao diện --> DONE
+- chia component --> DONE
+- code giao diện --> DONE.
+- chuyển screen flow với createStackNavigator --> DONE.
+- tạo fake list data để test trên local --> DONE.
+- add modal --> DONE.
+- render list to do --> DONE.
+- render to do work --> DONE.
+- thêm list todo trên local --> DONE.
+- toggle work DONE --> DONE.
+- render và animation cho percent bar --> DONE.
+- thêm work mới trên local
+- sửa detail work trên local
+- sửa tên list to do trên local
+- xoá work trên local
+- kết nói firebase 
+- re CURD với firebase 
