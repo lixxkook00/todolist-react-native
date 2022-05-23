@@ -1,11 +1,20 @@
 import React,{useState} from 'react';
-import { View,TouchableHighlight,StyleSheet ,Text,Modal,ScrollView} from 'react-native';
 
 import AddListModal from '../components/AddListModal'
 import SpeedDialAddList from '../components/SpeedDialAddList'
 
 import colorsList from '../utils/Colors'
 import Header from '../components/Header'
+
+import { 
+        View,
+        TouchableHighlight,
+        StyleSheet,
+        Text,
+        Modal,
+        ScrollView
+    } 
+from 'react-native';
 
 const sectionList = [
     {
@@ -47,13 +56,13 @@ const sectionList = [
 
 function Home({navigation}) {
 
-    // toggle modal
-    const [listModalState,setListModalState] = useState(false)
+    // toggle modal listModalState
+    const [addListModalState,setAddListModalState] = useState(false)
 
-    // toggle speedail
-    const [openSpeedDail,setOpenSpeedDail] = useState(false)
+    // toggle speedail openSpeedDail
+    const [addListSpeedDail,setAddListSpeedDail] = useState(false)
 
-    // list section
+    // list section data
     const [list,setList] = useState(sectionList)
 
     const categoryItemHandler = (section) => {
@@ -61,9 +70,14 @@ function Home({navigation}) {
     }
 
     const toggleModalState = () => {
-        setListModalState(!listModalState)
+        setAddListModalState(!addListModalState)
     }
 
+    const toggleSpeedDial = () => {
+        setAddListSpeedDail(!addListSpeedDail)
+    }
+
+    // handle add new list
     const addList = (nameList) => {
         // clone to temp list with spread
         let tempList = [...list]
@@ -116,22 +130,24 @@ function Home({navigation}) {
                 </ScrollView>
 
                 <SpeedDialAddList 
-                    listModalState={listModalState} 
-                    setListModalState={setListModalState}
-                    openSpeedDail={openSpeedDail}
-                    setOpenSpeedDail={setOpenSpeedDail}
+                    addListModalState={addListModalState} 
+                    setAddListModalState={setAddListModalState}
+                    addListSpeedDail={addListSpeedDail}
+                    setAddListSpeedDail={setAddListSpeedDail}
                 />
 
                 {/* modal add list*/}
                 <Modal
                     animationType="slide"
-                    visible={listModalState}
+                    visible={addListModalState}
                     >
                         <View>
                             <AddListModal 
                                 closeModal={() => 
-                                { toggleModalState()
-                                    setOpenSpeedDail(!openSpeedDail)}
+                                    { 
+                                        toggleModalState()
+                                        toggleSpeedDial()
+                                    }
                                 }
                                 addList={addList}
                             />

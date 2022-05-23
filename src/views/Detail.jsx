@@ -5,7 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import AddTaskModal from '../components/AddTaskModal'
-import SpeedDialAddList from '../components/SpeedDialAddList'
+import SpeedDialAddTask from '../components/SpeedDialAddTask'
 
 import colorsList from '../utils/Colors'
 
@@ -41,10 +41,10 @@ export default function Detail({navigation}) {
     const [data,setData] = useState([...sectionItem])
 
     // toggle modal
-    const [listModalState,setListModalState] = useState(false)
+    const [addTaskModalState,setAddTaskModalState] = useState(false)
 
     // toggle speedail
-    const [openSpeedDail,setOpenSpeedDail] = useState(false)
+    const [addTaskSpeedDail,setAddTaskSpeedDail] = useState(false)
 
     const goBackHandler = () => {
         navigation.goBack();
@@ -64,11 +64,11 @@ export default function Detail({navigation}) {
         tempList.push({
             id:tempList.length,
             content:nameList,
-            done:true,
+            done:false,
         })
 
         // update new list
-        setList(tempList)
+        setData(tempList)
     }
 
     // aniamtion delay for display percent task done
@@ -168,28 +168,29 @@ export default function Detail({navigation}) {
         </ScrollView>
       </View>
 
-      <SpeedDialAddList 
-                    listModalState={listModalState} 
-                    setListModalState={setListModalState}
-                    openSpeedDail={openSpeedDail}
-                    setOpenSpeedDail={setOpenSpeedDail}
-                />
+      <SpeedDialAddTask 
+          addTaskModalState={addTaskModalState} 
+          setAddTaskModalState={setAddTaskModalState}
+          addTaskSpeedDail={addTaskSpeedDail}
+          setAddTaskSpeedDail={setAddTaskSpeedDail}
+      />
 
-                {/* modal add list*/}
-                <Modal
-                    animationType="slide"
-                    visible={listModalState}
-                    >
-                        <View>
-                            <AddTaskModal 
-                                closeModal={() => 
-                                { toggleModalState()
-                                    setOpenSpeedDail(!openSpeedDail)}
-                                }
-                                addList={addList}
-                            />
-                        </View>
-                </Modal>
+      {/* modal add list*/}
+      <Modal
+          animationType="slide"
+          visible={addTaskModalState}
+      >
+          <View>
+              <AddTaskModal 
+                  closeModal={() => 
+                  { 
+                    setAddTaskModalState(!addTaskModalState)
+                    setAddTaskSpeedDail(!addTaskSpeedDail)}
+                  }
+                  addList={addList}
+              />
+          </View>
+      </Modal>
     </View>
   )
 }

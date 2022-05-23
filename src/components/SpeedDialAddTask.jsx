@@ -4,12 +4,12 @@ import { SpeedDial } from 'react-native-elements';
 
 import colorsList from '../utils/Colors'
 
-export default function SpeedDialAddList(
+export default function SpeedDialAddTask(
     {
-      addListModalState,
-      setAddListModalState,
-      addListSpeedDail,
-      setAddListSpeedDail
+      addTaskModalState,
+      setAddTaskModalState,
+      addTaskSpeedDail,
+      setAddTaskSpeedDail,
     }
   ) {
 
@@ -17,17 +17,17 @@ export default function SpeedDialAddList(
     <>
       {/* actions button */}
         <SpeedDial
-          isOpen={addListSpeedDail}
+          isOpen={addTaskSpeedDail}
           icon={{ name: 'edit', color: colorsList.white }}
           openIcon={{ name: 'close', color: colorsList.white }}
-          onOpen={() => setAddListSpeedDail(!addListSpeedDail)}
-          onClose={() => setAddListSpeedDail(!addListSpeedDail)}
+          onOpen={() => setAddTaskSpeedDail(!addTaskSpeedDail)}
+          onClose={() => setAddTaskSpeedDail(!addTaskSpeedDail)}
           style={{paddingBottom: 15,paddingRight: 10}}
         >
           <SpeedDial.Action
             icon={{ name: 'add', color: colorsList.white }}
-            title="Add new list"
-            onPress={() => setAddListModalState(!addListModalState)}
+            title="Add new task"
+            onPress={() => setAddTaskModalState(!addTaskModalState)}
           />
         </SpeedDial>
     </>

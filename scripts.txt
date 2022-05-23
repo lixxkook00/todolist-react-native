@@ -10,9 +10,9 @@
 - thêm list todo trên local --> DONE.
 - toggle work DONE --> DONE.
 - render và animation cho percent bar --> DONE.
-- thêm work mới trên local
-- sửa detail work trên local
+- thêm work mới trên local --> done
+- sửa detail work trên local -->
 - sửa tên list to do trên local
 - xoá work trên local
-- kết nói firebase 
+- kết nối firebase 
 - re CURD với firebase 

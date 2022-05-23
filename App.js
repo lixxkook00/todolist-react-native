@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View,Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+
+// import firebase from "./FireBase";
 
 import Navigator from "./src/routers/Routers";
 
@@ -13,6 +15,23 @@ export default function App() {
   // title header
 
   // const [titleHeader,setTitleHeader] = useState('conchochuyen')
+
+  // const ref = firebase.firestore().collection('todo').doc()
+
+  // ref.onSnapshot((querySnapshot) => {
+  //   const items = [];
+  //   querySnapshot.forEach((doc) => {
+  //     items.push(doc.data());
+  //     console.log(doc.data())
+  //   })
+  //   console.log(items);
+  // })
+
+  // ref.onSnapshot(doc => {
+  //   firebase.database().ref("/todo");
+  // })
+
+  // console.log(ref)
 
   return (
       <View style={styles.container}>
