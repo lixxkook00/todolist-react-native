@@ -6,7 +6,7 @@ import Detail from "../views/Detail"
 
 const Routers = createStackNavigator ({
     Home: {
-        screen: Home,
+      screen: Home,
     },
     Detail:{
       screen: Detail,

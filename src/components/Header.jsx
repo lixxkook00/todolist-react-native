@@ -16,7 +16,7 @@ function Header({navigation}) {
             </TouchableHighlight>
             <Text >
                 <View >
-                    <Text style={styles.name}>conchochuyen</Text>
+                    <Text style={styles.name}>TCToDoList</Text>
                 </View>
             </Text>
             <Image
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
     name:{
         fontSize: 20,
         fontWeight: 'bold',
-        color:"#fff"
+        color:"#fff",
+        textAlign: 'center',
     }
 })
 

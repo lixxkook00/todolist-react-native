@@ -1,16 +1,23 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
 
+import {getFirestore } from "firebase/firestore";
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDNZtx1NRKnVQEGl1EyM6QpDZ-NnTHeIdo",
-    authDomain: "todolist-react-native-d6d71.firebaseapp.com",
-    projectId: "todolist-react-native-d6d71",
-    storageBucket: "todolist-react-native-d6d71.appspot.com",
-    messagingSenderId: "436838429019",
-    appId: "1:436838429019:web:ece513a56a410346f8aa7e"
-}
+  apiKey: "AIzaSyCRczmofH9X1AJkuBeCkiT-gOKMzwmPErw",
+  authDomain: "todolist-c07ff.firebaseapp.com",
+  projectId: "todolist-c07ff",
+  storageBucket: "todolist-c07ff.appspot.com",
+  messagingSenderId: "209984388395",
+  appId: "1:209984388395:web:63de2f34e97bb069f4996e"
+};
 
-firebase.initializeApp(firebaseConfig)
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-export default firebase;
+export const db = getFirestore(app)

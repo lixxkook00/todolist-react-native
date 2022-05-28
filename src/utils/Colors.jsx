@@ -7,6 +7,7 @@ const colorsList = {
     white:"#fff",
     black:"#000",
     purple:"#8998CD",
+    red:"#F44D4C",
 }
 
 export default colorsList

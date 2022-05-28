@@ -6,13 +6,14 @@
 - tạo fake list data để test trên local --> DONE.
 - add modal --> DONE.
 - render list to do --> DONE.
+
 - render to do work --> DONE.
 - thêm list todo trên local --> DONE.
 - toggle work DONE --> DONE.
 - render và animation cho percent bar --> DONE.
 - thêm work mới trên local --> done
 - sửa detail work trên local -->
-- sửa tên list to do trên local
-- xoá work trên local
-- kết nối firebase 
+- sửa tên list to do trên local -->
+- xoá work trên local -> DONE
+- kết nối firebase -> DONE
 - re CURD với firebase 

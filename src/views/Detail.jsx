@@ -1,81 +1,154 @@
-import React,{useState} from 'react'
-import { StyleSheet, Text, View, TouchableHighlight,ScrollView,Modal} from 'react-native'
+import React,{useState,useEffect} from 'react'
+import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,ScrollView,Modal,Animated} from 'react-native'
 import * as Progress from 'react-native-progress';
 import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+import { Swipeable } from 'react-native-gesture-handler';
 
 import AddTaskModal from '../components/AddTaskModal'
 import SpeedDialAddTask from '../components/SpeedDialAddTask'
 
 import colorsList from '../utils/Colors'
 
-const sectionItem = [
-    {
-        idList:0,
-        content:"Deadline dashboard trust group",
-        date:new Date(),
-        done: true,
-    },
-    {
-        idList:1,
-        content:"Final project Meanchine learning !!!",
-        date:new Date(),
-        done: true,
-    },
-    {
-        idList:2,
-        content:"Run for 5km ",
-        date:new Date(),
-        done: false,
-    },
-]
+import { collection,getDoc,updateDoc, addDoc, query, where ,doc, onSnapshot } from "firebase/firestore";
+import {db} from '../../firebase'
+
 
 const calcPercentTaskDone = (taskDone,totalTask) => {
-  return (taskDone/totalTask)
+  if(taskDone!==0 && totalTask!==0){
+    return (taskDone/totalTask)
+  }else{
+    return 0
+  }
+}
+
+const calcTaskDone = (taskList) => {
+  let result = 0;
+  taskList.map((task) => {
+    task.doneStatus === true ? result++ : result
+  })
+  console.log(result)
+  return result
 }
 
 export default function Detail({navigation}) {
 
-    const [percentTaskDone,setPercentTaskDone] = useState(0)
+  const [currentList,setCurrentList] = useState(null)
 
-    const [data,setData] = useState([...sectionItem])
+  const [percent,setPercent] = useState(0)
 
-    // toggle modal
-    const [addTaskModalState,setAddTaskModalState] = useState(false)
+  useEffect(()=>{
+    getListTask(navigation.getParam('id'))
+  },[])
 
-    // toggle speedail
-    const [addTaskSpeedDail,setAddTaskSpeedDail] = useState(false)
+  // READ
+  const getListTask = (idList) => {
+      getDoc(doc(db, "todolist",idList))
+      .then(docSnap => {
+          if (docSnap.exists()) {
+            setCurrentList(docSnap.data())
+            setPercent(calcPercentTaskDone(parseInt(docSnap.data().totalDoneTask),parseInt(docSnap.data().totalTaskQuantity)))
+          } else {
+            console.log("No such document!");
+          }
+      })
+  }    
 
-    const goBackHandler = () => {
-        navigation.goBack();
-    }
+  // CREATE NEW TASK
+  
+  const createNewTask = (newTaskList) => {
+    updateDoc(doc(db, "todolist",navigation.getParam('id')),{
+      id:"",
+      name:currentList.name,
+      taskList:[...newTaskList],
+      totalDoneTask:calcTaskDone(currentList.taskList),
+      totalTaskQuantity:currentList.taskList.length+1,
+    })
+    .then(() => {
+      // rerender list
+      getListTask(navigation.getParam('id'));
+      updateTask([...newTaskList])
+    })
+    .then(() => {
+      console.log("create new task successfully!");
+    })
+    .catch((error) => {
+      console.error("Error cannot create new task: ", error);
+    })
+  }
 
-    const handleToggleDoneTask = (index) => {
-        const tempData = [...data]
-        tempData[index].done = !tempData[index].done
-        setData(tempData)
-    }
-    
-    const addList = (nameList) => {
-        // clone to temp list with spread
-        let tempList = [...data]
+  const addList = (nameList) => {
+    // clone to temp list with spread
+    let tempList = [...currentList?.taskList]
 
-        // create new list
-        tempList.push({
-            id:tempList.length,
-            content:nameList,
-            done:false,
-        })
+    // create new list
+    tempList.push({
+        name:nameList,
+        doneStatus:false,
+    })
 
-        // update new list
-        setData(tempList)
-    }
+    console.log(tempList)
 
-    // aniamtion delay for display percent task done
-    setTimeout(() => {
-      setPercentTaskDone(calcPercentTaskDone(navigation.getParam('done'),navigation.getParam('totalWork')))
-    }
-    ,100)
+    // update new list
+    updateTask([...tempList])
+  }
+
+  // UPDATE
+  const updateTask = (newTaskList) => {
+    updateDoc(doc(db, "todolist",navigation.getParam('id')),{
+      id:"",
+      name:currentList.name,
+      taskList:[...newTaskList],
+      totalDoneTask:calcTaskDone(currentList.taskList),
+      totalTaskQuantity:currentList.taskList.length,
+    })
+    .then(() => {
+      // rerender list
+      getListTask(navigation.getParam('id'))
+    })
+    .then(() => {
+      console.log("update successfully!");
+    })
+    .catch((error) => {
+      console.error("Error cannot update task: ", error);
+    })
+  }
+
+  // DELETE TASK
+  const deleteTask = (index) => {
+    // clone to temp list with spread
+    let tempList = [...currentList?.taskList]
+
+    // create new list
+    tempList.splice(index, 1);
+
+    // update new list
+
+    console.log(tempList)
+    updateTask([...tempList])
+  }
+
+
+  // HANDLE DONE TASK TOGGLE
+  const handleToggleDoneTask = (index) => {
+
+    const tempList = [...currentList?.taskList]
+
+    tempList[index].doneStatus = !tempList[index].doneStatus
+
+    updateTask([...tempList])
+  }
+
+  // toggle modal
+  const [addTaskModalState,setAddTaskModalState] = useState(false)
+
+  // toggle speedail
+  const [addTaskSpeedDail,setAddTaskSpeedDail] = useState(false)
+
+  const goBackHandler = () => {
+      navigation.goBack();
+  }
 
   return (
     <View style={styles.main}>
@@ -90,7 +163,7 @@ export default function Detail({navigation}) {
         </TouchableHighlight>
 
         {/* list name */}
-        <Text style={styles.title}>{navigation.getParam('name')}</Text>
+        <Text style={styles.title}>{currentList?.name}</Text>
       
         {/* option button */}
         <View>
@@ -101,7 +174,7 @@ export default function Detail({navigation}) {
       {/* PERCENT BAR */}
       <View style={styles.percentTask}>
         <Progress.Bar 
-          progress={percentTaskDone} 
+          progress={percent} 
           width={null} 
           color={colorsList.pink}
           borderRadius={10}
@@ -110,7 +183,7 @@ export default function Detail({navigation}) {
 
       {/* LIST TASK */}
       <View style={styles.content}>
-        {/* LIST TO DO */}
+        {/* list to do */}
         <ScrollView 
           contentContainerStyle={{
           display: "flex",
@@ -121,47 +194,70 @@ export default function Detail({navigation}) {
           }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-        >        
+        >
+                
           {
-            data.map((item,index) => {
-              return (
-                <View 
-                  key={index} 
-                  style={
-                    [
-                      styles.todoItem,
-                      {
-                         backgroundColor: item.done ? colorsList.veryLightGray : colorsList.lightGray
-                      }
-                    ]
-                    }>
+            
+            currentList?.taskList?.map((item,index) => {
 
-                  {/* ITEM TO DO */}
-                  <TouchableHighlight 
-                    onPress={() => { 
-                      handleToggleDoneTask(index)
-                    }}
-                    underlayColor= {colorsList.pink}
-                    style={styles.todoItemIcon}
+              // ACTION SWIPER
+              const rightActions = (dragX,index) => {
+                return (
+                  <TouchableOpacity onPress={() => deleteTask(index)}>
+                    <Animated.View style={styles.deleteBtn}>
+                      <Animated.Text>
+                        Delete
+                      </Animated.Text>
+                    </Animated.View>
+                  </TouchableOpacity>
+                )
+              }
+
+              return (
+                <Swipeable 
+                  key={index} 
+                  renderRightActions={(_,dragX) => rightActions(dragX,index)}
+                  style={styles.item}
                   >
-                    {/* ICON */}
-                    <Ionicons
-                        name={ item.done ? "ios-checkmark-circle" : "ios-checkmark-circle-outline" }
-                        size={30}
-                        color={colorsList.pink}
-                    />
-                  </TouchableHighlight>
-                  {/* CONTENT */}
-                  <Text style={[
-                    styles.todoItemText,
-                    {
-                      textDecorationLine: item.done ? "line-through" : "none",
-                      opacity: item.done ? 0.5 : 1
-                    }
-                  ]}>
-                    {item.content}
-                  </Text>
-                </View>
+                  <View 
+                    style={
+                      [
+                        styles.todoItem,
+                        {
+                          backgroundColor: item.doneStatus ? colorsList.veryLightGray : colorsList.lightGray
+                        }
+                      ]
+                      }>
+
+                      {/* ITEM TO DO */}
+                      <TouchableHighlight 
+                        onPress={() => { 
+                          handleToggleDoneTask(index)
+                        }}
+                        underlayColor= {colorsList.pink}
+                        style={styles.todoItemIcon}
+                      >
+
+                        {/* ICON */}
+                        <Ionicons
+                            name={ item.doneStatus ? "ios-checkmark-circle" : "ios-checkmark-circle-outline" }
+                            size={30}
+                            color={colorsList.pink}
+                        />
+                      </TouchableHighlight>
+
+                      {/* CONTENT */}
+                      <Text style={[
+                        styles.todoItemText,
+                        {
+                          textDecorationLine: item.doneStatus ? "line-through" : "none",
+                          opacity: item.doneStatus ? 0.5 : 1
+                        }
+                      ]}>
+                        {item.name}
+                      </Text>
+                  </View>
+                </Swipeable>
               )
             })
           }
@@ -217,6 +313,9 @@ const styles = StyleSheet.create({
     color: colorsList.pink,
     fontWeight: 'bold',
   },
+  item:{
+    display: 'flex',
+  },
   content:{
     backgroundColor: colorsList.white,
     flex: 1,
@@ -234,7 +333,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     paddingVertical: 10,
-    width: "98%",
+    minWidth: "98%",
+    maxWidth: "98%",
     alignItems: 'center',
     justifyContent: 'flex-start',
     marginVertical: 4,
@@ -251,5 +351,18 @@ const styles = StyleSheet.create({
     color: colorsList.pink,
     borderRadius:50,
     overflow: 'hidden'
+  },
+  deleteBtn:{
+    flex:1,
+    backgroundColor: colorsList.red,
+    height:'90%',
+    marginTop: '5%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    width: 80,
+    borderRadius:30,
+    color: colorsList.white,
   }
 })

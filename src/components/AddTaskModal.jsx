@@ -49,7 +49,7 @@ export default function AddTaskModal({closeModal,addList}) {
           <View style={{alignItems: 'stretch',width: "90%",color: colorsList.pink}}>
             <TextInput 
               style={styles.input} 
-              placeholder="Type name for new list"
+              placeholder="Type name of work"
               placeholderTextColor={colorsList.pink}
               value={nameList}
               onChangeText = {text => setNameList(text)}

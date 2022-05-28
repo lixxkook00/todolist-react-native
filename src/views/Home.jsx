@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 
 import AddListModal from '../components/AddListModal'
 import SpeedDialAddList from '../components/SpeedDialAddList'
@@ -6,55 +6,83 @@ import SpeedDialAddList from '../components/SpeedDialAddList'
 import colorsList from '../utils/Colors'
 import Header from '../components/Header'
 
+import { collection,getDocs, addDoc} from "firebase/firestore";
+import {db} from '../../firebase'
+
+import { Swipeable } from 'react-native-gesture-handler';
+
 import { 
         View,
         TouchableHighlight,
         StyleSheet,
         Text,
         Modal,
-        ScrollView
+        ScrollView,
+        TouchableOpacity,
+        Animated
     } 
 from 'react-native';
 
-const sectionList = [
-    {
-        id:0,
-        name:"All",
-        date:new Date(),
-        done:2,
-        totalWork:10,
-    },
-    {
-        id:1,
-        name:"Work",
-        date:new Date(),
-        done:22,
-        totalWork:110,
-    },
-    {
-        id:2,
-        name:"Home",
-        date:new Date(),
-        done:2,
-        totalWork:3,
-    },
-    {
-        id:3,
-        name:"Daily",
-        date:new Date(),
-        done:69,
-        totalWork:100,
-    },
-    {
-        id:4,
-        name:"Other",
-        date:new Date(),
-        done:69,
-        totalWork:100,
-    }
-]
 
 function Home({navigation}) {
+
+    // CRUD WITH FIREBASE
+
+    // CREATE
+    const createList = (nameList) => {
+        addDoc(collection(db, "todolist"), {
+            id: "",
+            name: nameList,
+            taskList: [],
+            totalDoneTask:0,
+            totalTaskQuantity:0,
+        })
+        .then(() => {
+            // rerender list
+            getLists()
+        })
+        .then(() => {
+            console.log("create new list successfully!");
+        })
+        .catch((error) => {
+            console.error("Error cannot create new list: ", error);
+        });
+    }
+
+    // list section data
+    const [list,setList] = useState([])
+
+    const getLists = () => {
+        let result = []
+        getDocs(collection(db, "todolist"))
+        .then(docSnap => {
+            // console.log(typeof docSnap)
+            docSnap.forEach((doc) => {
+                // get id
+                let idTemp = (doc._document.key.path.segments[6])
+
+                // push list infor
+                result.push({
+                    id: idTemp,
+                    name:doc.data().name,
+                    taskList:doc.data().taskList,
+                    totalDoneTask:doc.data().totalDoneTask,
+                    totalTaskQuantity:doc.data().totalTaskQuantity,
+                })
+            });
+            return result;
+        })
+        .then(
+            result => {
+                setList(result);
+            }
+        )
+    }
+
+    useEffect(() => {
+        getLists()
+    })
+
 
     // toggle modal listModalState
     const [addListModalState,setAddListModalState] = useState(false)
@@ -62,8 +90,6 @@ function Home({navigation}) {
     // toggle speedail openSpeedDail
     const [addListSpeedDail,setAddListSpeedDail] = useState(false)
 
-    // list section data
-    const [list,setList] = useState(sectionList)
 
     const categoryItemHandler = (section) => {
         navigation.navigate('Detail',section)
@@ -75,24 +101,6 @@ function Home({navigation}) {
 
     const toggleSpeedDial = () => {
         setAddListSpeedDail(!addListSpeedDail)
-    }
-
-    // handle add new list
-    const addList = (nameList) => {
-        // clone to temp list with spread
-        let tempList = [...list]
-
-        // create new list
-        tempList.push({
-            id:tempList.length,
-            name:nameList,
-            date:new Date(),
-            done:10,
-            totalWork:10,
-        })
-
-        // update new list
-        setList(tempList)
     }
 
     return (
@@ -108,22 +116,43 @@ function Home({navigation}) {
                         alignItems: "flex-start", }}>
                 {
                     list.map((section,index) => {
+
+                        // ACTION SWIPER
+                        const rightActions = (dragX,index) => {
+                            return (
+                            <TouchableOpacity onPress={() => deleteTask(index)}>
+                                <Animated.View style={styles.deleteBtn}>
+                                    <Animated.Text>
+                                        Delete
+                                    </Animated.Text>
+                                </Animated.View>
+                            </TouchableOpacity>
+                            )
+                        }
+
                         return (
-                            <TouchableHighlight 
-                                style={styles.categoryItem}
-                                underlayColor="#8C98CD" 
+                            <Swipeable
+                                style={styles.item}
                                 key={index}
-                                onPress={() => categoryItemHandler(section)} 
-                            >
-                                <View style={styles.button}>
-                                    <Text style={styles.categoryItemName}>
-                                        {section.name}
-                                    </Text>
-                                    <Text style={styles.categoryItemWorkQuantity}>
-                                        ({section.done}/{section.totalWork})
-                                    </Text>
+                                renderRightActions={(_,dragX) => rightActions(dragX,index)}
+                                >
+                                <View>
+                                    <TouchableHighlight 
+                                    style={styles.categoryItem}
+                                    underlayColor="#8C98CD" 
+                                    onPress={() => categoryItemHandler(section)} 
+                                    >
+                                        <View style={styles.button}>
+                                            <Text style={styles.categoryItemName}>
+                                                {section.name}
+                                            </Text>
+                                            <Text style={styles.categoryItemWorkQuantity}>
+                                                ({section.totalDoneTask}/{section.totalTaskQuantity})
+                                            </Text>
+                                        </View>
+                                    </TouchableHighlight>
                                 </View>
-                            </TouchableHighlight>
+                            </Swipeable>
                         )
                     })
                 }
@@ -149,7 +178,7 @@ function Home({navigation}) {
                                         toggleSpeedDial()
                                     }
                                 }
-                                addList={addList}
+                                addList={createList}
                             />
                         </View>
                 </Modal>
@@ -194,7 +223,31 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "rgb(119,119,119)",
         marginTop: 5,
-    }
+    },
+    deleteBtn:{
+        flex:1,
+        backgroundColor: colorsList.red,
+        height:'90%',
+        marginTop: '5%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 20,
+        width: 80,
+        borderRadius:30,
+        color: colorsList.white,
+    },
+    item:{
+        display: 'flex',
+        backgroundColor: "#fff",
+        width: "46%",
+        height: 100,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: "2%",
+        borderRadius: 10
+    },
 })
 
 export default Home;
