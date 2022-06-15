@@ -11,7 +11,7 @@ import SpeedDialAddTask from '../components/SpeedDialAddTask'
 
 import colorsList from '../utils/Colors'
 
-import { collection,getDoc,updateDoc, addDoc, query, where ,doc, onSnapshot } from "firebase/firestore";
+import { getDoc,updateDoc,doc } from "firebase/firestore";
 import {db} from '../../firebase'
 
 
@@ -40,7 +40,7 @@ export default function Detail({navigation}) {
 
   useEffect(()=>{
     getListTask(navigation.getParam('id'))
-  },[])
+  })
 
   // READ
   const getListTask = (idList) => {
@@ -366,3 +366,9 @@ const styles = StyleSheet.create({
     color: colorsList.white,
   }
 })
+
+
+
+
+
+ 

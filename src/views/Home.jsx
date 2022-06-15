@@ -9,8 +9,6 @@ import Header from '../components/Header'
 import { collection,getDocs, addDoc} from "firebase/firestore";
 import {db} from '../../firebase'
 
-import { Swipeable } from 'react-native-gesture-handler';
-
 import { 
         View,
         TouchableHighlight,
@@ -117,42 +115,22 @@ function Home({navigation}) {
                 {
                     list.map((section,index) => {
 
-                        // ACTION SWIPER
-                        const rightActions = (dragX,index) => {
-                            return (
-                            <TouchableOpacity onPress={() => deleteTask(index)}>
-                                <Animated.View style={styles.deleteBtn}>
-                                    <Animated.Text>
-                                        Delete
-                                    </Animated.Text>
-                                </Animated.View>
-                            </TouchableOpacity>
-                            )
-                        }
-
                         return (
-                            <Swipeable
-                                style={styles.item}
-                                key={index}
-                                renderRightActions={(_,dragX) => rightActions(dragX,index)}
-                                >
-                                <View>
-                                    <TouchableHighlight 
-                                    style={styles.categoryItem}
-                                    underlayColor="#8C98CD" 
-                                    onPress={() => categoryItemHandler(section)} 
-                                    >
-                                        <View style={styles.button}>
-                                            <Text style={styles.categoryItemName}>
-                                                {section.name}
-                                            </Text>
-                                            <Text style={styles.categoryItemWorkQuantity}>
-                                                ({section.totalDoneTask}/{section.totalTaskQuantity})
-                                            </Text>
-                                        </View>
-                                    </TouchableHighlight>
+                            <TouchableHighlight 
+                            style={styles.categoryItem}
+                            underlayColor="#8C98CD" 
+                            key={index}
+                            onPress={() => categoryItemHandler(section)} 
+                            >
+                                <View style={styles.button}>
+                                    <Text style={styles.categoryItemName}>
+                                        {section.name}
+                                    </Text>
+                                    <Text style={styles.categoryItemWorkQuantity}>
+                                        ({section.totalDoneTask}/{section.totalTaskQuantity})
+                                    </Text>
                                 </View>
-                            </Swipeable>
+                            </TouchableHighlight>
                         )
                     })
                 }
@@ -251,3 +229,8 @@ const styles = StyleSheet.create({
 })
 
 export default Home;
+
+
+
+
+
